@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>exactily product</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../../style.css">
+</head>
+
+<body id="prod_body">
+    <header>
+        <div class="logo">
+            <img src="https://i.pinimg.com/originals/dc/32/81/dc3281c714d5f92e9e5af1851cee7d10.jpg">
+        </div>
+        <div class="types">
+            <ul>
+                <li><a href="../../index.html" class="link">HOME</a></li>
+                <li><a href="../menu/menu.html" class="link">MENU</a></li>
+                <li><a href="#" class="link">USER</a></li>
+                <li><a href="../contact/contact.html" class="link">CONTACT</a></li>
+                <li><a href="../basket/basket.html"class="link" ><i class="fa-solid fa-cart-shopping"></i></a>
+                    <span id="cart_count"></span></li>
+            </ul>
+        </div>
+    </header>
+    <div id="product_box">
+        <div id="product_img"></div>
+        <div id="product_info">
+            <div id="product_name"></div>
+            <div id="product_price"></div>
+            <div id="product_discription"></div>
+            <div id="inCart"><button id="cart">to the cart!</button></div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            function updateCartCount() {
+                let addedProducts = JSON.parse(localStorage.getItem('addedProducts')) || [];
+                const cartCountElement = document.getElementById('cart_count');
+                if (cartCountElement) {
+                    cartCountElement.textContent = addedProducts.length;
+                }
+            }
+            updateCartCount();
+
+
+            let gotProduct = JSON.parse(localStorage.getItem('selectedProduct'))
+            if (gotProduct) {
+                function updateCartCount() {
+                    // Получаем корзину из localStorage
+                    let addedProducts = JSON.parse(localStorage.getItem("addedProducts")) || [];  // vortexa set anum || uxaki tenuma tenc anunov ban chka avtomat datark [] a sarqum // bayc vortexa set anum?
+
+                    // Группируем товары по их названиям (или другому уникальному свойству)
+                    let groupedCart = addedProducts.reduce((all, product) => { // logikayuma stanum ira yntrelu pahy
+                        let found = all.find((item) => item.name === product.name); //all-y vercnuma abmoxj  mec zangvacy isk producty vercnuma meky konkretv mi tesakna stugum 
+                        if (found) {
+                            found.quantity += 1; // Если товар уже в корзине, увеличиваем количество
+                        } else {
+                            all.push({ ...product, quantity: 1 }); // Добавляем новый товар с количеством 1
+                        }
+                        return all;
+                    }, []);
+
+                    // Получаем элемент для отображения количества товаров
+                    const cartCountElement = document.getElementById("cart_count");
+                    if (cartCountElement) {
+                        cartCountElement.textContent = addedProducts.length; // Общее количество всех товаров
+                    }
+                }
+
+
+
+                let prod_img_div = document.getElementById('product_img');
+                let prod_img = document.createElement('img');
+                prod_img.src = gotProduct.img;
+                prod_img_div.append(prod_img);
+
+                let prod_name_div = document.getElementById('product_name');
+                let name = document.createElement('p');
+                name.innerText = gotProduct.title;
+                prod_name_div.append(name)
+
+                let prod_price_div = document.getElementById('product_price');
+                let price = document.createElement('span');
+                var newprice = gotProduct.price
+                price.innerHTML = `${gotProduct.price}$`;
+                prod_price_div.append(price);
+
+                let prod_description_div = document.getElementById('product_discription');
+                let description = document.createElement('p');
+                description.innerText = gotProduct.info;
+                prod_description_div.append(description);
+                var links = document.querySelectorAll('.link');
+                console.log(links);
+
+                window.addEventListener('resize', () => {
+                    let iconArray = [
+                        `<i class="fa-solid fa-house-chimney"></i>`,
+                        `<i class="fa-solid fa-utensils"></i>`,
+                        `<i class="fa-solid fa-user"></i>`,
+                        `<i class="fa-solid fa-envelope"></i>`,
+                        `<i class="fa-solid fa-cart-shopping"></i>`
+                    ];
+
+                    let textArray = [
+                        'home',
+                        'menu',
+                        'user',
+                        'contact',
+                        '<i class="fa-solid fa-cart-shopping"></i>'
+                    ]
+
+                    function icon(x, ind) {
+                        x.innerHTML = iconArray[ind % iconArray.length]; // Используем индекс для выбора иконки // ind iconArray-i hamara x-y linkjsi .. %-н мукфвфкстгьф зщйк ешмн уеу шкфтшс ьус емш утй ифофтгь
+                    }
+                    function text(x, ind) {
+                        x.innerHTML = textArray[ind % textArray.length]; // Используем индекс для выбора иконки // ind iconArray-i hamara x-y linkjsi .. %-н мукфвфкстгьф зщйк ешмн уеу шкфтшс ьус емш утй ифофтгь
+                    }
+
+                    var width = window.innerWidth;
+                    if (width <= 768) {
+                        links.forEach((e, index) => {
+                            icon(e, index); // Передаем индекс
+                        });
+                    } else {
+                        links.forEach((e, index) => {
+                            text(e, index); // Передаем индекс
+                        });
+                    }
+                });
+
+                // Запуск для начального размера окна
+                window.dispatchEvent(new Event('resize'));
+
+
+                function addToCart(x) {
+                    let addProduct = JSON.parse(localStorage.getItem("addProduct")) || []  // nayuma ete chka senc ban lockal hartakum inqniran stexcuma?? 
+                    let addedProducts = JSON.parse(localStorage.getItem('addedProducts')) || [];
+                    addedProducts.push(x); // ete ka 
+
+                    addProduct.push(x) // ete datarka // mer tenalu hamar
+                    localStorage.setItem("addProduct", JSON.stringify(addProduct));
+                    localStorage.setItem('addedProducts', JSON.stringify(addedProducts));
+                }
+
+                let cartBtn = document.getElementById('cart');
+                cartBtn.addEventListener('click', () => {
+                    addToCart(gotProduct)
+                    location.reload() // clicki jamanak stanum enq tvyal apranqy vorin nayum en detalov stanum enq aramdzin cart anunov  vory entakaya qart gtnalun chi gnacel hly
+                })
+            }
+
+
+            // console.log(window.innerHeight);
+            // console.log(window.innerWidth);
+        })
+    </script>
+</body>
+
+</html>
